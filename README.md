@@ -49,6 +49,10 @@ Android 에서 redux 를 기반으로 한 uni-directional data flow(UDA) 를 구
 
 ### 1. Action 
 
+```kotlin
+interface Action
+```
+
 #### 1.1 Common Action
 
 안드로이드에서 공통적으로 사용 되는 뷰에 대한 Action 들 이다.
@@ -64,6 +68,10 @@ Android 에서 redux 를 기반으로 한 uni-directional data flow(UDA) 를 구
 
 ### 2. State
 
+```kotlin
+interface State
+```
+
 Store 에서는 단 한개의 State 만 을 가질 수 있다. 하지만 공통 state 나 각 도메인별 state 가 증가 하게 된다면 Store 의 State 엔 모두 저장 할 수 없다. 그렇기 때문에 State 는 `AppState` 라는 한개의 State 를 Store 에 저장 하되, AppState 의 내부에 공통, 도메인 State 를 갖게 해 준다. 
 
 하지만 문제가 있다면 각 도메인 등 에서 자신의 State 를 구독 할때를 제외할 때  `getCurrentState()` 을 통해서 State 를 얻을 때 이다. get 하려 할 때 어떤 State 를 얻어와야 하는지 모르므로 AppState 에서 필요한 State 를 꺼내올 수 있는 최소한의 정보가 필요하다. 
@@ -78,23 +86,107 @@ Store 에서는 단 한개의 State 만 을 가질 수 있다. 하지만 공통 
 
 ### 3. Middleware
 
+```kotlin
+typealias Dispatcher = (Action) -> Unit
+
+interface MiddleWare<S: State> {
+  fun create(store: Store<S>, next: Dispatcher): Dispatcher
+}
+```
+
 #### 3.1 ActionProcessor Middleware
+
+```kotlin
+interface ActionProcessor<S: State> {
+  fun run(action: Observable<Action>, store: Store<S>): Observable<out Action>
+}
+```
 
 dispatch 된 Action 들을 받아 내부에서 프로세싱 하고 난 뒤 다음 미들웨어에 전달 한다. Action processor middleware 내 에는 여러개의 Action processor 가 존재 하며 이 들을 이터레이셔닝 하고 나온 Success 혹은 Failed Action 을 다음 미들웨어에 전달 하거나 다시 새로운 Action 을 dispatch 하게 할 수도 있다. 
 
 #### 3.2 Logger Middlewar
 
+```kotlin
+class LoggerMiddleware<S : State> : Middleware<S> {
+    override fun create(store: Store<S>, next: Dispatcher): Dispatcher {
+        return { action: Action ->
+            if (BuildConfig.DEBUG) {
+                Log.d(LOG_TAG, "action dispatch : [${action.getSuperClassNames()}] $action")
+            }
+            val prevState = store.getCurrentState()
+            next(action)
+
+            if (BuildConfig.DEBUG) {
+                val currentState = store.getCurrentState()
+                if (prevState != currentState) {
+                    (currentState as AppState).printStateLogs()
+                }
+            }
+        }
+    }
+}
+```
+
 최초 dispatch 된 Action 과 Success/Failed Action 등 Result Action 까지의 변화를 로깅 해 주는 미들웨어 이다. 이 미들웨어는 실제 Action 의 생성 에 관여하지 않으며 단순히 내부상태만 읽고 디버깅용 로그메시지로 출력 하도록 한다. 
 
 ### 4. Reducer 
 
+```kotlin
+interface Reducer<S: State> {
+  fun reduce(oldState: S, resultAction: Action): S
+}
+```
+
 #### 4.1 AppReducer
 
-
+```kotlin
+class AppReducer: Reducer<AppState>, KoinComponent {
+  override fun reduce(oldState: AppState, resultAction: Action): AppState {
+    // ...
+  }
+}
+```
 
 #### 4.2 Domain Reducer
 
 ### 5. Store
 
+```kotlin
+interface Store<S : State> {
+    fun dispatch(action: Action)
+    fun getStateListener(): Observable<S>
+    fun getCurrentState(): S
+}
+```
+
 #### 5.1 AppStore
 
+```kotlin
+class AppStore(
+    initializeAppState: AppState,
+    reducer: Reducer<AppState>
+) : Store<AppState>, KoinComponent {
+    private val stateEmitter: BehaviorSubject<AppState> = BehaviorSubject.create()
+    private val middleWares: Array<MiddleWare<AppState>> = getKoin().get()
+    private var appState: AppState = initializeAppState
+    private var dispatcher: Dispatcher
+
+    init {
+        dispatcher = middleWares.foldRight({ dispatchedAction ->
+            appState = reducer.reduce(appState, dispatchedAction)
+            stateEmitter.onNext(appState)
+        }) { middleWare, next ->
+            middleWare.create(this, next)
+        }
+    }
+
+    override fun dispatch(action: Action) {
+        dispatcher(action)
+    }
+
+    override fun subscribe(): Observable<AppState> =
+        stateEmitter.hide().observeOn(AndroidSchedulers.mainThread())
+
+    override fun getState(): AppState = appState
+}
+```
