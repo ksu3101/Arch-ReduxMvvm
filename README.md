@@ -1,7 +1,5 @@
 # Redux Based android architecture
 
-작성중..
-
 이 프로젝트는 Redux 를 기반으로 한 안드로이드 어플리케이션 아키텍쳐를 정리 한 프로젝트 이다. 
 
 ## Redux
@@ -53,9 +51,13 @@ Android 에서 redux 를 기반으로 한 uni-directional data flow(UDA) 를 구
 interface Action
 ```
 
+안드로이드에서 정의 된 Action 은 각종 이벤트 와 특정 Action 을 핸들링 하고 난 뒤 다시 핸들링 하기 위해서 Dispatch 된 Success, Failed Action 등 이 존재 한다. 
+
+Action 인터페이스를 구현한 Action 은 Immutable Data class 로서 Action 을 미들웨어, 리듀서 에서 핸들링 하기 위한 불변 데이터들을 담을 수 있다. Action 단순히 뷰에 대한 업데이트를 요구 하는 트리거 이벤트가 될 수도 있고, 데이터를 담아 네트워크 API 를 이용하거나 Database 에서 데이터를 가져 오는 등 비동기 작업을 요청 할 수도 있다. 
+
 #### 1.1 Common Action
 
-안드로이드에서 공통적으로 사용 되는 뷰에 대한 Action 들 이다.
+안드로이드에서 공통적으로 사용 되는 뷰들에 대한 Action 들 이다.
 
 - Toast
 - Dialog 
@@ -76,6 +78,10 @@ Store 에서는 단 한개의 State 만 을 가질 수 있다. 하지만 공통 
 
 하지만 문제가 있다면 각 도메인 등 에서 자신의 State 를 구독 할때를 제외할 때  `getCurrentState()` 을 통해서 State 를 얻을 때 이다. get 하려 할 때 어떤 State 를 얻어와야 하는지 모르므로 AppState 에서 필요한 State 를 꺼내올 수 있는 최소한의 정보가 필요하다. 
 
+- AppState 내부에서 sub domain State를 관리 하는 방법
+ - Array<State>, List<State> : 간단한 구조 이지만, State 가 하나라도 갱신 되면 Array 나 List 를 다시 생성해야 한다. 
+ - Map(String, State) : Key String 으로 State 의 class name 등 유니크 한 값을 기반으로 State 를 저장 하고 갱신하게 한다. 
+
 #### 2.1 Common State
 
 안드로이드 공통적으로 사용 되는 뷰에 대한 상태들 이다. 위 Action 을 통해서 보여줄 메시지 및 데이터를 받아 ViewModel 등 에서 핸들링 할 수 있게 한다.
@@ -93,6 +99,10 @@ interface MiddleWare<S: State> {
   fun create(store: Store<S>, next: Dispatcher): Dispatcher
 }
 ```
+
+Action 을 Reducer 에 전달 하기 위해 중간에 개입하여 데이터를 제어 한다. 
+
+자세하게 보면, Store 를 통해 Dispatch 된 Action 을 제어 하여 새로운 Action(Success, Failed) 을 생성하여 Reducer 에 전달 한다. 꼭 생성할 필요는 없이 중간에서 Action 과 관련된 작업 후 해당 Action 을 그대로 리듀서에 전달 해도 상관없다. 
 
 #### 3.1 ActionProcessor Middleware
 
@@ -137,6 +147,8 @@ interface Reducer<S: State> {
 }
 ```
 
+Middleware 를 통해 전달받은 (Result) Action 을 핸들링 하여 단 한개의 State 를 만든다. State 는 이전 State 일 수도 있다. State 는 화면을 그리기 위한 기반 데이터를 담은 Immutable data class 이다. 
+
 #### 4.1 AppReducer
 
 ```kotlin
@@ -147,7 +159,11 @@ class AppReducer: Reducer<AppState>, KoinComponent {
 }
 ```
 
+AppState 를 제어 하기 위한 Reducer 이다. 
+
 #### 4.2 Domain Reducer
+
+각 Domain 별로 갖게되는 Reducer 들 이다. 내부에서 Action 을 전달 받아 필요한 경우 핸들링 하고 새로운 State 를 만든다. 
 
 ### 5. Store
 
@@ -158,6 +174,9 @@ interface Store<S : State> {
     fun getCurrentState(): S
 }
 ```
+
+최신 State 가 저장된 Store 이다.
+
 
 #### 5.1 AppStore
 
@@ -190,3 +209,7 @@ class AppStore(
     override fun getState(): AppState = appState
 }
 ```
+
+## MVVM 
+
+## Koin 
