@@ -4,23 +4,21 @@
 
 사용된 도구 및 라이브러리르 간단하게 정리 하면 다음과 같다. (계속 수정될 수 있음)
 
-- Architecture
- - androidx
- - MVVM
- - Databinding
- - Koin (DI)
-- Event handler
- - Rx2.x
-- Network
- - retrofit 2.x
- - moshi
- - glide
-- Testing
- - jUnit
- - mockito
- - Koin-testing
- 
-추가로, 될 수 있으면 최대한 100% kotlin 위주로 구현하며 외부 라이브러리에 대한 의존을 최소화 한다. 
+* Architecture
+  - androidx
+  - MVVM
+  - Databinding
+  - Koin (DI)
+* Event handler 
+  - Rx2.x 
+* Network 
+  - retrofit 2.x
+  - moshi
+  - glide
+* Testing
+  - jUnit
+  - mockito (대체 할 수 있는 좋은 테스팅 도구가 있는지?)
+  - Koin-testing
 
 ## Redux
 
