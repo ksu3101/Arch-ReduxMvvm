@@ -1,6 +1,26 @@
 # Redux Based android architecture
 
-이 프로젝트는 Redux 를 기반으로 한 안드로이드 어플리케이션 아키텍쳐를 정리 한 프로젝트 이다. 
+이 프로젝트는 Redux 를 기반으로 한 안드로이드 어플리케이션 아키텍쳐를 정리 한 프로젝트 이다. 기본적으로 []Android architecture blueprint](https://github.com/android/architecture-samples)를 기반으로 만들어졌다. 
+
+사용된 도구 및 라이브러리르 간단하게 정리 하면 다음과 같다. (계속 수정될 수 있음)
+
+- Architecture
+ - androidx
+ - MVVM
+ - Databinding
+ - Koin (DI)
+- Event handler
+ - Rx2.x
+- Network
+ - retrofit 2.x
+ - moshi
+ - glide
+- Testing
+ - jUnit
+ - mockito
+ - Koin-testing
+ 
+추가로, 될 수 있으면 최대한 100% kotlin 위주로 구현하며 외부 라이브러리에 대한 의존을 최소화 한다. 
 
 ## Redux
 
@@ -212,4 +232,8 @@ class AppStore(
 
 ## MVVM 
 
+작성중...
+
 ## Koin 
+
+작성중...
