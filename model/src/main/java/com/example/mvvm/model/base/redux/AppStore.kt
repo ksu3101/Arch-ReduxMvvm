@@ -10,13 +10,12 @@ import org.koin.core.KoinComponent
  * @since 2020-02-24
  */
 class AppStore(
-    val initializeAppState: AppState,
-    var reducer: Reducer<AppState>
+    initializeAppState: AppState,
+    reducer: Reducer<AppState>
 ) : Store<AppState>, KoinComponent {
     private val stateEmitter: BehaviorSubject<AppState> = BehaviorSubject.create()
     private val middleWares: Array<MiddleWare<AppState>> = getKoin().get()
     private var appState: AppState = initializeAppState
-
     private var dispatcher: Dispatcher
 
     init {
@@ -32,10 +31,8 @@ class AppStore(
         dispatcher(action)
     }
 
-    override fun subscribe(): Observable<AppState> =
+    override fun stateListener(): Observable<AppState> =
         stateEmitter.hide().observeOn(AndroidSchedulers.mainThread())
-
-    // todo : is need unsubscribe function??
 
     override fun getState(): AppState = appState
 }
