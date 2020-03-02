@@ -9,7 +9,7 @@ import com.example.mvvm.common.exts.getSuperClassNames
  * @since 2020-02-24
  */
 class AppState(
-    vararg val states: State
+    val states: List<State>
 ) : State {
     fun printStateLogs() {
         Log.d(LOG_TAG, "AppState (\n")
