@@ -16,9 +16,7 @@ class AppReducer : Reducer<AppState>, KoinComponent {
         oldState: S,
         resultAction: Action
     ): AppState {
-        return AppState(
-            *(getReducers<S, R>().map  { it.reduce(oldState, resultAction) }.toTypedArray())
-        )
+        return AppState(getReducers<S, R>().map  { it.reduce(oldState, resultAction) })
     }
 
     private inline fun <reified S:State, reified R:Reducer<S>> getReducers(): List<R> =

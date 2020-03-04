@@ -5,6 +5,10 @@ package com.example.mvvm.common.exts
  * @since 2020-02-24
  */
 
+inline fun <R, T> R?.ifNotNull(isNotNull: (R) -> T, isNull: () -> T): T {
+    return if (this != null) isNotNull(this) else isNull()
+}
+
 fun Any.getSuperClassNames(): String {
     var currentSuperClazz = this.javaClass.superclass
     if (!isAvailableClass(currentSuperClazz)) {

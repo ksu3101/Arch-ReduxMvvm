@@ -1,6 +1,7 @@
 package com.example.mvvm.arch_reduxmvvm.base.di
 
 import com.example.mvvm.arch_reduxmvvm.base.BaseActivity
+import com.example.mvvm.arch_reduxmvvm.base.helper.MessageHelperImpl
 import com.example.mvvm.common.DEFAULT_TIMEOUT_SEC
 import com.example.mvvm.common.KOIN_CURRENT_ACTIVITY
 import com.example.mvvm.model.base.BaseViewModel
@@ -9,6 +10,7 @@ import com.example.mvvm.model.base.redux.*
 import com.example.mvvm.model.domain.common.MessageReducer
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
+import org.koin.android.ext.koin.androidApplication
 import org.koin.androidx.viewmodel.dsl.viewModel
 import org.koin.core.Koin
 import org.koin.dsl.module
@@ -21,7 +23,7 @@ import java.util.concurrent.TimeUnit
 
 val appModule = module {
     single {
-        AppState()
+        AppState(listOf())
     }
     single {
         AppStore(get(), AppReducer())
@@ -45,7 +47,7 @@ val repositoriesModule = module {
 }
 
 val helpersModule = module {
-    //single<MessageHelper> { MessageHelper() }
+    single<MessageHelper> { MessageHelperImpl(androidApplication()) }
 }
 
 val reducersModule = module {
