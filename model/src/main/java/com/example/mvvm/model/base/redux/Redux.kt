@@ -12,6 +12,8 @@ interface Action
 interface State
 
 interface Reducer<S : State> {
+    val initializeState: S
+
     fun reduce(oldState: S, resultAction: Action): S
 }
 

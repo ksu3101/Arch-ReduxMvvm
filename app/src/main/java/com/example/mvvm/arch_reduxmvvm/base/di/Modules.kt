@@ -26,7 +26,7 @@ val appModule = module {
         AppState(listOf())
     }
     single {
-        AppStore(get(), AppReducer())
+        AppStore(get(), AppReducer(get()))
     }
     single<Array<MiddleWare<AppState>>> {
         arrayOf(
@@ -52,7 +52,7 @@ val helpersModule = module {
 
 val reducersModule = module {
     single<List<Reducer<*>>> { listOf(
-
+        MessageReducer()
     )}
 }
 

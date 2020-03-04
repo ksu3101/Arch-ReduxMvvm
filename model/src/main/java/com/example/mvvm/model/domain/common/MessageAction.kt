@@ -17,6 +17,6 @@ data class ShowingGeneralToast(
 ): MessageAction()
 
 data class ShowingErrorToast(
-    @StringRes val errorMessageResId: Int,
+    @StringRes val errorMessageResId: Int = 0,
     val errorMessageStr: String? = null
 ): MessageAction()

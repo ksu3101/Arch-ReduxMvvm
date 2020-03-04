@@ -7,7 +7,9 @@ import com.example.mvvm.model.base.redux.Reducer
  * @author beemo
  * @since 2020-03-02
  */
-class MessageReducer: Reducer<MessageState> {
+class MessageReducer(
+    override val initializeState: MessageState = HandledMessageState
+): Reducer<MessageState> {
 
     override fun reduce(oldState: MessageState, resultAction: Action): MessageState {
         return when(resultAction) {

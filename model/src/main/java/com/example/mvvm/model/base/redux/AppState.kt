@@ -9,8 +9,21 @@ import com.example.mvvm.common.exts.getSuperClassNames
  * @since 2020-02-24
  */
 class AppState(
-    val states: List<State>
+    val states: Map<String, State>
 ) : State {
+
+    inline fun <reified S : State> getCurrentState(): S? {
+        for (state in states.values) {
+            if (state is S) return state
+        }
+        return null
+    }
+
+    inline fun <reified S : State> getStateBy(key: String): S? {
+        val currentState = states.get(key) ?: return null
+        return currentState as S
+    }
+
     fun printStateLogs() {
         Log.d(LOG_TAG, "AppState (\n")
         for (state in states) {
