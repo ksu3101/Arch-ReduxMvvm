@@ -41,6 +41,11 @@ import org.mockito.ArgumentMatchers.anyString
  * - Error Action -> 오류 메시지 출력 -> 현상 유지 (로컬에 로깅 혹은 특정 서버에 오류 로깅 전달 시
  * 해당 코드에 대한 테스팅 필요)
  *
+ * - 주의점
+ *  1. state 가 단 한개라도 발행 되면 모든 reducer 를 거치게 된다. 거치는 reducer 에서 핸들링 하지 않는다면
+ *  무조건 oldState 를 리턴 하므로 state subscriber 의 value count assertion 은 oldState 를 포함한
+ *  모든 state 의 발행 갯수와 맞추어야 한다.
+ *  
  * @author beemo
  * @since 2020-03-04
  */
@@ -126,7 +131,7 @@ class AuthActionProcessor(
 }
 
 /**
- * example test codes.
+ * example unit test codes.
  */
 class ReduxActionProcessorAndReducerTest : KoinTest {
     private val authRepo: AuthRepository = mock()
@@ -169,12 +174,10 @@ class ReduxActionProcessorAndReducerTest : KoinTest {
         RxJavaPlugins.setComputationSchedulerHandler { ignore -> scheduler }
 
         stateSubscriber = appStore.stateListener()
-            .map { it.getCurrentState<TestingAuthState>() }
-            .map { it!! }
+            .map { it.getCurrentState<TestingAuthState>() ?: UserLoginState }
             .test()
         messagerStateSubscriber = appStore.stateListener()
-            .map { it.getCurrentState<MessageState>() }
-            .map { it!! }
+            .map { it.getCurrentState<MessageState>() ?: HandledMessageState }
             .test()
     }
 
@@ -192,9 +195,10 @@ class ReduxActionProcessorAndReducerTest : KoinTest {
         appStore.dispatch(InitializedAction)
 
         stateSubscriber.assertNoErrors()
-        stateSubscriber.assertValueCount(2)
-        stateSubscriber.assertValueAt(1) { it is UserLoginState }
-        messagerStateSubscriber.assertNoValues()
+        stateSubscriber.assertValueCount(1)
+        stateSubscriber.assertValueAt(0) { it is UserLoginState }
+        messagerStateSubscriber.assertValueCount(1)
+        messagerStateSubscriber.assertValueAt(0) { it is HandledMessageState}
     }
 
     @Test
@@ -215,7 +219,8 @@ class ReduxActionProcessorAndReducerTest : KoinTest {
             }
             false
         }
-        messagerStateSubscriber.assertNoValues()
+        messagerStateSubscriber.assertValueCount(2)
+        messagerStateSubscriber.assertValueAt(1) { it is HandledMessageState}
     }
 
     @Test
@@ -231,7 +236,8 @@ class ReduxActionProcessorAndReducerTest : KoinTest {
         stateSubscriber.assertNoErrors()
         stateSubscriber.assertValueCount(2)
         stateSubscriber.assertValueAt(1) { it is UserLoginState }
-        messagerStateSubscriber.assertValueAt(0) { it is ShowingErrorToastState }
+        messagerStateSubscriber.assertValueCount(2)
+        messagerStateSubscriber.assertValueAt(1) { it is ShowingErrorToastState }
     }
 
 }

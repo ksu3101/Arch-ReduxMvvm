@@ -23,7 +23,7 @@ import java.util.concurrent.TimeUnit
 
 val appModule = module {
     single {
-        AppState(listOf())
+        AppState(mapOf())
     }
     single {
         AppStore(get(), AppReducer(get()))
