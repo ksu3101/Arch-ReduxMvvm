@@ -28,6 +28,16 @@
 
 Android 에서 redux 를 기반으로 한 uni-directional data flow(UDA) 를 구현하기 위해서는 reactive stream 을 이용 하여 단방향 스트림을 통해 생성되는 객체 data 를 구독하는 방법으로 구현 한다. 
 
+redux 기반 구조 에서는 장, 단점이 존재 하다. 가존 java 로 구현되었던 코드 에서는 반복되는 코드가 너무 많아 골치가 아팠지만 그나마 kotlin 으로 적용 하면서 반복 코드를 많이 줄이기는 했다. 하지만 그럼에도 문제는 여전히 존재 한다. 정리된 장-단점은 아래와 같다. 
+
+- 장점
+  - use-case로 정의된 데이터 흐름을 비동기, 동기로 구현하여 적용 할 수 있다. 
+  - 비즈니스 코드와 뷰 코드 완전히 분리 되고 dependency 를 정리 하여 코드 가독성을 높여 유지, 보수가 쉬워진다. (이건 MVVM 의 장점) 
+- 단점
+  - Redux구조 를 알아야 하기 때문에 러닝 커브가 높다. 
+  - 테스팅 소스를 작성 하는데 반복되는 코드가 존재 한다. (이 부분은 좀 더 정리가 필요할 듯 하다) 
+  - Store 한개애 존재 하는 단일 State 구조에 여러개의 Domain 을 가질 수 있는 안드로이드 앱 구조상 실제 Redux 코드와 달라질 수 밖에 없다. 
+  
 ![android redux base1](https://github.com/ksu3101/TIL/blob/master/imgs/100110_android_redux_arch2.png)
 
 기본적인 구조는 Redux 를 참고 하였지만 화면상에서 보여지는 상태를 최소화 하여도 팝업 다이얼로그, 토스트 등 domain 에서 벗어난 공통 화면 변경 등이 있어 state, reducer 들의 구조가 약간 다르다. 
@@ -202,6 +212,10 @@ class AppStore(
     override fun getState(): AppState = appState
 }
 ```
+
+store는 단 한개만 존재 하며 stre 에는 단 1개의 state 만 가질 수 있다. 그것이 `AppState` 이다. 하지만 안드로이드 에서는 여러개의 상태가 존재 할 수 있다. (예를 들어 현재 도메인 화면 과 화면에 업데이트 될 토스트, 다이얼로그 및 상단 바 등 ui 변화 및 비동기 작업 으로 인한 세션 등 변화) 여러개의 상태를 만들되 이 를 store 에서 갖게 하려면 여러개의 `AppState` 가 아닌 AppState 내부에 자료구조(list 나 map 등) 을 두어 각 도메인별 유니크한 상태를 관리 하게 해 준다. 
+
+`AppStore` 에서는 이 `AppState` 를 갖고 있으며 이 state 를 구독 할 수 있는 listener 등을 제공 한다. 그리고 `Action` 을 dispatch 할 수도 있다. 
 
 ## MVVM 
 
