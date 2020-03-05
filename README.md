@@ -22,33 +22,7 @@
 
 ## Redux
 
-Redux 의 흐름을 간단하게 보면 다음과 같다. 
-
-![redux base flow](https://github.com/ksu3101/TIL/blob/master/imgs/100110_android_redux_arch4.png)
-
-### 1. Action
-
-Action 은 View 를 변화시키기 위해 Store 를 통해 dispatch 되는 Event 들 을 정의 한 Immutable Data 인스턴스 이다. Action 은 사용자가 발생시킨 Action 그리고 Action 에서 파생된 Result Action인 Success Action, Failed Action 등 이 존재 할 수 있다.
-
-또한, Action 은 Domain 단위에 따라 재정의 되어 dispatch 할 수 있다. 
-
-### 2. State
-
-State 는 domain별로 단 한개의 최신 상태를 갖게 되는 Immutable Data 인스턴스로서 View 에 변화를 주기 위한 데이터를 포함한 객체이다. State 는 Action 이 dispatch 되어야만 갱신 되어 Store 에 저장된다. 
-
-State 는 Domain 단위에 따라 각 상태에 따라 재정의 된다. 
-
-### 3. Middleware
-
-dispatch 된 Action 을 이터레이셔닝 하면서 핸들링 한다. middleware 는 1개 일수도 그 보다 많을 수 있다. 모든 middleware 를 이터레이셔닝 모두 지나거나 혹은 중간에 기존의 Action 을 토대로 새로운 Action 이 될 수 있다.
-
-### 4. Reducer
-
-Middleware 를 통해서 나온 Action 을 분기 하여 State를 만들어 준다. 생성된 State 는 Store 를 통해서 구독 할 수 있다. 
-
-### 5. Store
-
-최신 상태인 State 와 Reducer들을 갖는 인스턴스이다. Store 를 통해서 새로운 Action 을 dispatcbh 하거나 특정 State 를 subscribe 할 수 있다.
+기본적인 Redux 에 대한 설명은 [링크](https://github.com/ksu3101/TIL/blob/master/ETC/200305.md)를 참고 하면 된다. 
 
 ## Android architecture
 
@@ -97,7 +71,8 @@ Store 에서는 단 한개의 State 만 을 가질 수 있다. 하지만 공통 
 하지만 문제가 있다면 각 도메인 등 에서 자신의 State 를 구독 할때를 제외할 때  `getCurrentState()` 을 통해서 State 를 얻을 때 이다. get 하려 할 때 어떤 State 를 얻어와야 하는지 모르므로 AppState 에서 필요한 State 를 꺼내올 수 있는 최소한의 정보가 필요하다. 
 
 - AppState 내부에서 sub domain State를 관리 하는 방법
- - Array<State>, List<State> : 간단한 구조 이지만, State 가 하나라도 갱신 되면 Array 나 List 를 다시 생성해야 한다. 
+ - Array<State>, List<State> : 
+   - 간단한 구조 이지만, State 가 하나라도 갱신 되면 Array 나 List 를 다시 생성해야 한다. 
  - Map(String, State) : Key String 으로 State 의 class name 등 유니크 한 값을 기반으로 State 를 저장 하고 갱신하게 한다. 
 
 #### 2.1 Common State
