@@ -221,13 +221,32 @@ store는 단 한개만 존재 하며 stre 에는 단 1개의 state 만 가질 �
 
 작성중...
 
+### ViewModel
+
+#### `render()`
+
+> `abstract fun render(state: S): Boolean`
+
+#### Binding utils
+
+### LiveData
+
 ## Koin 
 
 작성중...
+
+### vs `Dagger`
+
+### modules 
 
 ## Testing
 
 작성중... 
 
 ### JunitTesting
+
+### mockito in kotlin
+
+### testing with Koin
+
 
