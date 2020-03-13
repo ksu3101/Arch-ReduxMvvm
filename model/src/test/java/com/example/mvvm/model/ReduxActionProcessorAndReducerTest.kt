@@ -45,7 +45,7 @@ import org.mockito.ArgumentMatchers.anyString
  *  1. state 가 단 한개라도 발행 되면 모든 reducer 를 거치게 된다. 거치는 reducer 에서 핸들링 하지 않는다면
  *  무조건 oldState 를 리턴 하므로 state subscriber 의 value count assertion 은 oldState 를 포함한
  *  모든 state 의 발행 갯수와 맞추어야 한다.
- *  
+ *
  * @author beemo
  * @since 2020-03-04
  */
