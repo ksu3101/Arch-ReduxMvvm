@@ -53,16 +53,16 @@ import org.mockito.ArgumentMatchers.anyString
 /**
  * for testing Actions.
  */
-private sealed class TestingAuthAction : Action
+sealed class TestingAuthAction : Action
 
-private object InitializedAction : TestingAuthAction()
+object InitializedAction : TestingAuthAction()
 
-private data class RequestLoginAction(
+data class RequestLoginAction(
     val id: String,
     val pw: String
 ) : TestingAuthAction()
 
-private data class LoginSuccessAction(
+data class LoginSuccessAction(
     val userInfo: String // and more datas...
 ) : TestingAuthAction()
 
@@ -71,9 +71,9 @@ private data class LoginSuccessAction(
  */
 sealed class TestingAuthState : State
 
-private object UserLoginState : TestingAuthState()
+object UserLoginState : TestingAuthState()
 
-private data class LobbyState(
+data class LobbyState(
     val userInfo: String
 ) : TestingAuthState()
 
