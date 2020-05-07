@@ -1,7 +1,6 @@
 package com.example.mvvm.common.exts
 
 /**
- *
  * @author beemo
  * @since 2020-02-24
  */
@@ -32,7 +31,7 @@ fun String?.isNotNumber(): Boolean {
     return !(this.isNumber())
 }
 
-inline fun String?.convertToInteger(integersFunc: (Int) -> Int): Int {
+inline fun String?.toInteger(integersFunc: (Int) -> Int): Int {
     this?.toIntOrNull()?.let {
         return integersFunc(it)
     }

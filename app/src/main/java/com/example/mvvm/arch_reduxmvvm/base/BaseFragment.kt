@@ -39,7 +39,7 @@ abstract class BaseFragment<S: State>: Fragment() {
         compositeDisposable.clear()
         compositeDisposable.add(
             appStore.stateListener()
-                .flatMap { Observable.fromIterable(it.states) }
+                .flatMap { Observable.fromIterable(it.states.values) }
                 .isStateType()
                 .distinctUntilChanged()
                 .subscribe {

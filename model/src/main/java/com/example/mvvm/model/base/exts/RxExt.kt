@@ -24,11 +24,18 @@ fun <T> Observable<T>.subscribeWith(
 ) {
     rxDisposer.addDisposer(
         this.subscribeOn(AndroidSchedulers.mainThread())
-            .subscribe(
-                { onNext(it) },
-                { onError?.let { errorHandler -> errorHandler(it) } },
-                { onComplete?.let { onComplete } }
-            )
+            .run {
+                with(this) {
+
+                }
+                if (onError != null && onComplete != null) {
+                    this.subscribe(onNext, onError, onComplete)
+                } else if (onError != null) {
+                    this.subscribe(onNext, onError)
+                } else {
+                    this.subscribe(onNext)
+                }
+            }
     )
 }
 
@@ -40,11 +47,15 @@ fun <T> Flowable<T>.subscribeWith(
 ) {
     rxDisposer.addDisposer(
         this.subscribeOn(AndroidSchedulers.mainThread())
-            .subscribe(
-                { onNext(it) },
-                { onError?.let { errorHandler -> errorHandler(it) } },
-                { onComplete?.let { onComplete } }
-            )
+            .run {
+                if (onError != null && onComplete != null) {
+                    this.subscribe(onNext, onError, onComplete)
+                } else if (onError != null) {
+                    this.subscribe(onNext, onError)
+                } else {
+                    this.subscribe(onNext)
+                }
+            }
     )
 }
 
@@ -56,11 +67,15 @@ fun <T> Maybe<T>.subscribeWith(
 ) {
     rxDisposer.addDisposer(
         this.subscribeOn(AndroidSchedulers.mainThread())
-            .subscribe(
-                { onNext(it) },
-                { onError?.let { errorHandler -> errorHandler(it) } },
-                { onComplete?.let { onComplete } }
-            )
+            .run {
+                if (onError != null && onComplete != null) {
+                    this.subscribe(onNext, onError, onComplete)
+                } else if (onError != null) {
+                    this.subscribe(onNext, onError)
+                } else {
+                    this.subscribe(onNext)
+                }
+            }
     )
 }
 
@@ -71,10 +86,13 @@ fun <T> Single<T>.subscribeWith(
 ) {
     rxDisposer.addDisposer(
         this.subscribeOn(AndroidSchedulers.mainThread())
-            .subscribe(
-                { onNext(it) },
-                { onError?.let { errorHandler -> errorHandler(it) } }
-            )
+            .run {
+                if (onError != null) {
+                    this.subscribe(onNext, onError)
+                } else {
+                    this.subscribe(onNext)
+                }
+            }
     )
 }
 
@@ -85,10 +103,13 @@ fun Completable.subscribeWith(
 ) {
     rxDisposer.addDisposer(
         this.subscribeOn(AndroidSchedulers.mainThread())
-            .subscribe(
-                { onComplete?.let { it } },
-                { onError?.let { errorHandler -> errorHandler(it) } }
-            )
+            .run {
+                if (onError != null) {
+                    this.subscribe(onComplete, onError)
+                } else {
+                    this.subscribe(onComplete)
+                }
+            }
     )
 }
 

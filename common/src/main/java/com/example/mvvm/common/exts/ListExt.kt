@@ -19,14 +19,11 @@ fun <E> List<E?>?.availableIndex(position: Int): Boolean {
 fun <E> List<E?>?.getElement(position: Int): E? =
     (if (this.availableIndex(position)) this?.get(position) else null)
 
-fun <E> List<E>.addAll(list: List<E>): List<E> {
-    val mutableList = this.toMutableList()
-    list.forEach { mutableList.add(it) }
-    return mutableList.toList()
-}
+fun <E> List<E>.addAll(list: List<E>): List<E> =
+    this.toMutableList()
+        .apply { this.addAll(list) }
 
-fun <E> List<E>.add(e: E): List<E> {
-    val list = this.toMutableList()
-    list.add(e)
-    return list.toList()
-}
+
+fun <E> List<E>.add(e: E): List<E> =
+    this.toMutableList()
+        .apply { this.add(e) }
