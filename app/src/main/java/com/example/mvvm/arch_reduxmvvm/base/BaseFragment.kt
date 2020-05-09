@@ -16,6 +16,7 @@ import com.example.mvvm.model.base.redux.State
 import io.reactivex.Observable
 import io.reactivex.disposables.CompositeDisposable
 import org.koin.android.ext.android.inject
+import org.koin.androidx.viewmodel.ext.android.getViewModel
 
 /**
  * @author beemo
@@ -23,7 +24,7 @@ import org.koin.android.ext.android.inject
  */
 abstract class BaseFragment<S: State>: Fragment() {
     protected val appStore: AppStore by inject()
-    protected val vm: BaseViewModel<S> by inject()
+    protected val vm: BaseViewModel<S> = getViewModel()
     protected val navigationHelper: NavigationHelper<S> by inject()
     private lateinit var binder: ViewDataBinding
     private val compositeDisposable = CompositeDisposable()

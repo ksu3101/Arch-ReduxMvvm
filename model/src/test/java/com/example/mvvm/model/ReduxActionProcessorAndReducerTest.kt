@@ -1,10 +1,13 @@
 package com.example.mvvm.model
 
+import com.example.mvvm.model.utils.given
+import com.example.mvvm.model.utils.mock
+import com.example.mvvm.model.utils.shouldEqualTo
 import com.example.mvvm.model.base.exts.actionTransformer
 import com.example.mvvm.model.base.exts.createActionProcessor
 import com.example.mvvm.model.base.redux.*
 import com.example.mvvm.model.domain.common.*
-import com.example.mvvm.model.utils.*
+import com.example.mvvm.model.utils.willReturn
 import io.reactivex.Observable
 import io.reactivex.Single
 import io.reactivex.android.plugins.RxAndroidPlugins
@@ -72,6 +75,8 @@ data class LoginSuccessAction(
 sealed class TestingAuthState : State
 
 object UserLoginState : TestingAuthState()
+
+object UserLoginFailedState : TestingAuthState()
 
 data class LobbyState(
     val userInfo: String

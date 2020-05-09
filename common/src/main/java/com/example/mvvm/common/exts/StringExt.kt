@@ -38,12 +38,6 @@ inline fun String?.toInteger(integersFunc: (Int) -> Int): Int {
     return 0
 }
 
-inline fun String?.ifItIntegerString(func: (Int) -> Unit) {
-    this?.toIntOrNull()?.let {
-        func(it)
-    }
-}
-
 fun String?.notEqual(op: String?): Boolean {
     return if (this.isNullOrEmpty() || op.isNullOrEmpty()) {
         false

@@ -25,9 +25,6 @@ fun <T> Observable<T>.subscribeWith(
     rxDisposer.addDisposer(
         this.subscribeOn(AndroidSchedulers.mainThread())
             .run {
-                with(this) {
-
-                }
                 if (onError != null && onComplete != null) {
                     this.subscribe(onNext, onError, onComplete)
                 } else if (onError != null) {

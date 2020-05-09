@@ -4,6 +4,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.example.mvvm.model.base.BaseViewModel
 import com.example.mvvm.model.base.exts.livedata.setFalse
+import com.example.mvvm.model.base.exts.livedata.setTrue
 import com.example.mvvm.model.base.redux.AppStore
 import org.junit.After
 import org.junit.Before
@@ -13,13 +14,9 @@ import org.koin.test.KoinTest
 import org.koin.test.inject
 
 /**
- *
  * @author beemo
  * @since 2020/03/17
  */
-
-object UserLoginFailedState : TestingAuthState()
-
 class LoginViewModel(
     private val appStore: AppStore
 ) : BaseViewModel<TestingAuthState>() {
@@ -38,9 +35,7 @@ class LoginViewModel(
     override fun render(state: TestingAuthState): Boolean {
         when (state) {
             is UserLoginState -> {
-                _userId.value = ""
-                _passWord.value = ""
-                _isLoginSuccess.setFalse()
+                _isLoginSuccess.setTrue()
                 return true
             }
             is UserLoginFailedState -> {
