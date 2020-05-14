@@ -1,6 +1,5 @@
 package com.example.mvvm.model.base
 
-import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import com.example.mvvm.model.base.redux.State
 import io.reactivex.disposables.CompositeDisposable
@@ -35,11 +34,3 @@ abstract class BaseViewModel<S: State> : ViewModel(), RxDisposer {
         }
     }
 }
-
-/**
- * @author beemo
- * @since 2020-05-08
- */
-abstract class BaseViewModelWithSavedState<S: State>(
-    private val state: SavedStateHandle
-): BaseViewModel<S>()

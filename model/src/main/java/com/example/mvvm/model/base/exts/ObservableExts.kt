@@ -8,5 +8,5 @@ import io.reactivex.Observable
  * @since 2020-03-02
  */
 
-inline fun <reified S: State> Observable<S>.isStateType(): Observable<S> =
+inline fun <reified S: State> Observable<S>.canHandleStateType(): Observable<S> =
     ofType<S>(S::class.java)

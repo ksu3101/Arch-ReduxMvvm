@@ -41,6 +41,7 @@ ext {
     appCompat = '1.1.0'
     recyclerview = '1.0.0'
     multiDex = '2.0.1'
+    constraintlayout = '1.1.2'
 
     // reactive x
     rxAndroid = '2.1.1'

@@ -9,14 +9,13 @@ import androidx.databinding.DataBindingUtil
 import androidx.databinding.ViewDataBinding
 import androidx.fragment.app.Fragment
 import com.example.mvvm.model.base.BaseViewModel
-import com.example.mvvm.model.base.exts.isStateType
+import com.example.mvvm.model.base.exts.canHandleStateType
 import com.example.mvvm.model.base.helper.NavigationHelper
 import com.example.mvvm.model.base.redux.AppStore
 import com.example.mvvm.model.base.redux.State
 import io.reactivex.Observable
 import io.reactivex.disposables.CompositeDisposable
 import org.koin.android.ext.android.inject
-import org.koin.androidx.viewmodel.ext.android.getViewModel
 
 /**
  * @author beemo
@@ -24,10 +23,11 @@ import org.koin.androidx.viewmodel.ext.android.getViewModel
  */
 abstract class BaseFragment<S: State>: Fragment() {
     protected val appStore: AppStore by inject()
-    protected val vm: BaseViewModel<S> = getViewModel()
     protected val navigationHelper: NavigationHelper<S> by inject()
     private lateinit var binder: ViewDataBinding
     private val compositeDisposable = CompositeDisposable()
+
+    protected abstract val vm: BaseViewModel<S>
 
     @LayoutRes
     abstract fun getLayoutResId(): Int
@@ -41,8 +41,8 @@ abstract class BaseFragment<S: State>: Fragment() {
         compositeDisposable.add(
             appStore.stateListener()
                 .flatMap { Observable.fromIterable(it.states.values) }
-                .isStateType()
                 .distinctUntilChanged()
+                .canHandleStateType()
                 .subscribe {
                     if (it as? S == null) throw IllegalStateException("$it is not allowed state.")
                     if (!vm.render(it)) {
